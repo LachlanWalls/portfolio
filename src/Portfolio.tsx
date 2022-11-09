@@ -15,11 +15,11 @@ type TypeFilterName = typeof TypeFilterNames[number]
 const tech = {
   'HTML & CSS': { years: [1, 2, 3, 3, 3, 3], level: 'Advanced' },
   'JavaScript': { years: [0, 2, 3, 3, 3, 3], level: 'Advanced' },
-  'TypeScript': { years: [0, 0, 0, 0, 1, 3], level: 'Proficient' },
+  'TypeScript': { years: [0, 0, 0, 0, 1, 3], level: 'Advanced' },
   'Python': { years: [0, 1, 2, 2, 3, 3], level: 'Advanced' },
   'Java': { years: [0, 0, 0, 0, 0, 2], level: 'Competent' },
-  'MySQL': { years: [0, 0, 1, 1, 2, 2], level: 'Proficient' },
-  'Swift': { years: [2, 1, 0, 0, 0, 0], level: '' },
+  'MySQL': { years: [0, 0, 1, 1, 2, 3], level: 'Proficient' },
+  'Swift': { years: [2, 1, 0, 0, 0, 0], level: 'Advanced' },
 
   'Git': { years: [0, 1, 2, 2, 2, 3], level: 'Proficient' },
   'Docker': { years: [0, 0, 0, 0, 1, 2], level: 'Competent' },
