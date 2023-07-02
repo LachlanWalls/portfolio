@@ -6,24 +6,26 @@ import { projects } from './projects'
 import Project from './components/Project'
 import { Menu, X } from 'react-feather'
 
-const TechFilterNames = ['JavaScript', 'TypeScript', 'Python', 'MySQL', 'Git', 'Docker', 'React'] as const
+const TechFilterNames = ['JavaScript', 'TypeScript', 'Python', 'MySQL', 'Git', 'Docker', 'React', 'Vite', 'S3'] as const
 type TechFilterName = typeof TechFilterNames[number]
-const TypeFilterNames = ['Frontend', 'Backend', 'Games', 'Libraries', 'Utilities', 'Open source'] as const
+const TypeFilterNames = ['Frontend', 'Backend', 'Games', 'Libraries', 'Utilities', 'Open source', 'DevOps'] as const
 type TypeFilterName = typeof TypeFilterNames[number]
 
 // Competent, Proficient, Advanced
 const tech = {
-  'HTML & CSS': { years: [1, 2, 3, 3, 3, 3], level: 'Advanced' },
-  'JavaScript': { years: [0, 2, 3, 3, 3, 3], level: 'Advanced' },
-  'TypeScript': { years: [0, 0, 0, 0, 1, 3], level: 'Advanced' },
-  'Python': { years: [0, 1, 2, 2, 3, 3], level: 'Advanced' },
-  'Java': { years: [0, 0, 0, 0, 0, 2], level: 'Competent' },
-  'MySQL': { years: [0, 0, 1, 1, 2, 3], level: 'Advanced' },
-  'Swift': { years: [2, 1, 0, 0, 0, 0], level: '' },
+  'HTML & CSS': { years: [1, 2, 3, 3, 3, 3, 3], level: 'Advanced' },
+  'JavaScript': { years: [0, 2, 3, 3, 3, 3, 3], level: 'Advanced' },
+  'TypeScript': { years: [0, 0, 0, 0, 1, 3, 3], level: 'Advanced' },
+  'Python': { years: [0, 1, 2, 2, 3, 3, 1], level: 'Advanced' },
+  'Java': { years: [0, 0, 0, 0, 0, 2, 2], level: 'Competent' },
+  'MySQL': { years: [0, 0, 1, 1, 2, 3, 3], level: 'Advanced' },
+  'Swift': { years: [2, 1, 0, 0, 0, 0, 1], level: 'Learning' },
 
-  'Git': { years: [0, 1, 2, 2, 2, 3], level: 'Proficient' },
-  'Docker': { years: [0, 0, 0, 0, 1, 2], level: 'Competent' },
-  'React': { years: [0, 0, 0, 2, 3, 3], level: 'Advanced' }
+  'Git': { years: [0, 1, 2, 2, 2, 3, 3], level: 'Advanced' },
+  'Docker': { years: [0, 0, 0, 0, 1, 2, 3], level: 'Advanced' },
+  'React': { years: [0, 0, 0, 2, 3, 3, 3], level: 'Advanced' },
+  'React Native': { years: [0, 0, 0, 0, 0, 2, 2], level: 'Proficient' },
+  'DevOps': { years: [0, 0, 1, 1, 2, 2, 3], level: 'Proficient' },
 }
 
 export default function Portfolio () {
@@ -118,7 +120,7 @@ export default function Portfolio () {
       <h2 id='tech'>Languages &amp; Tech</h2>
       <table>
         <thead>
-          <tr><th></th><th>'17</th><th>'18</th><th>'19</th><th>'20</th><th>'21</th><th>'22</th><th>Level</th></tr>
+          <tr><th></th><th>'17</th><th>'18</th><th>'19</th><th>'20</th><th>'21</th><th>'22</th><th>'23</th><th>Level</th></tr>
         </thead>
         <tbody>
           {Object.entries(tech).map(([name, data], i) => <tr key={i}>

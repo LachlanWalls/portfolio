@@ -20,7 +20,7 @@ export interface Project {
 export const projects: Record<string, Project> = {
   'dynodel': {
     title: 'Dynodel',
-    tags: ['Frontend', 'Backend', 'Games', 'Utilities', 'JavaScript', 'Python'],
+    tags: ['Frontend', 'Backend', 'Games', 'Utilities', 'JavaScript', 'Python', 'DevOps'],
     starred: true,
     description: `Dynodel is a collection of some of my small but amusing creations, suggested by friends or just random ideas.
     
@@ -64,13 +64,14 @@ export const projects: Record<string, Project> = {
   },
   'lachlantransfer': {
     title: 'lachlantransfer',
-    tags: ['Frontend', 'Backend', 'Utilities', 'JavaScript'],
+    tags: ['Frontend', 'Backend', 'Vite', 'React', 'Utilities', 'JavaScript', 'TypeScript', 'S3'],
     description: `When I moved on from my <a href="https://bitprostore.com/wp-content/uploads/2020/08/mac_mb13_5decf_00967.jpg" target="_blank">2010 macbook</a>, I was pretty disappointed to see the lack of decent cross-platform file transfer options for my Windows laptop. And thus, lachlantransfer was born.
     
     lachlantransfer is very simple. Anyone can upload a file, and anybody who was on the site when the file was uploaded will be able to view and download it. I even added some i18n, with the help of Google Translate (not my proudest moment).
     
-    It would be extremely easy to view files from before you visited the webpage, that mechanism is client-side. I could fix that, but I haven't, because the service simply isn't intended to be private. Just easy to use for those in the know.`,
+    More recently, I've updated lachlantransfer to use Vite & React (or more specifically Preact) with TypeScript, instead of just Vanilla JS. I also took this opportunity to touch up the UI a little and add some cute animal icons for different users.`,
     buttons: [
+      { text: 'lachlantransfer', link: 'https://github.com/LachlanWalls/lachlantransfer', icon: GitHub },
       { text: 'lachlantransfer', link: 'https://transfer.dynodel.com', icon: ExternalLink }
     ]
   },
@@ -102,355 +103,155 @@ export const projects: Record<string, Project> = {
   },
   'kettu-api': {
     title: 'kAPI (Kettu\'s API)',
-    tags: ['Backend', 'JavaScript', 'TypeScript', 'Git'],
+    tags: ['Backend', 'JavaScript', 'TypeScript', 'Git', 'DevOps', 'S3'],
     starred: true,
-    description: `Kettu is a custom Discord chat bot, with a dedicated API for web interaction (eg the web dashboard) and internal shard management. It features a WebSocket gateway for realtime events and a RESTful API, acting as a sort of CRUD layer/interface between the multiple shards.
+    description: `Kettu is a custom Discord chat bot, with a dedicated API as a layer on top of the database, which interfaces with end users through the web dashboard and the bot process. It featuhostsres a WebSocket gateway for realtime events and a RESTful API, acting in some ways as a sort of CRUD layer.
 
-    This (ongoing) project is really interesting. It has quite a large functionality scope for a chat bot and needs to handle account authentication (through OAuth2), permission structures, and interaction with Discord's API. The API is written in a modular format with a focus on readability, easy extensibility and reasonable performance.
+    This project is always ongoing, and really interesting to me. It has quite a large functionality scope for a chat bot and needs to handle account authentication (through OAuth2), permission structures, and interaction with Discord's API. The API is written in a modular format with a focus on readability, easy extensibility and end-to-end type safety.
         
     The project features:
-        - Thorough error handling
-        - OAuth2 via Discord
-        - Authentication tokens (signed and timestamped)
-        - IP-based and code based multi-factor authentication
-        - Request ratelimiting (account and IP based)
-        - Performant JSONSchema request validation
-        - RethinkDB database and migrations
+        - 6 separate containerised (Docker) services for different aspects of the API, interacting over RabbitMQ
+        - 3 multi-instanced services which are horizontally scalable across machines, which is intended to be automated in the future
+        - Deeply integrated error handling in all components
+        - Authentication through Discord with OAuth2
+        - Token-based login management (signed and timestamped)
+        - Multi-factor authentication based on user IP and TOTP codes
+        - Request ratelimiting (by both user and IP)
+        - End-to-end typed HTTP routes with zod for schema validation
+        - End-to-end typed Gateway protocol, also using zod for schema validation
+        - RethinkDB database linked to external volume for data integrity and automated data migrations
         - Temporal interfaces (database feed, cron actions, and scheduled operations)
+        - S3-based CDN to self-host images and reduce load on the origin servers
+        - Highly configurable monitoring for all high-frequency events with automated alerting systems
+        - Discord proxy for cross-shard ratelimiting
 
-    Unfortunately, the code for this project isn't open source; however below I have featured a few snippets of the more interesting code.`,
+    Unfortunately, the code for this project isn't open source; however below I have featured a few snippets of interesting code. There is so much more that is really cool but difficult to show, so if you're curious let me know.`,
     snippets: [
       {
-        title: 'Message Collector',
-        caption: 'In some cases, a HTTP API route needs to retrieve data from a connected WebSocket client. The following class provides a useful interface between WS and HTTP, by collecting socket messages according to filters and returning them through the EventEmitter structure.',
-        code: `// The collector captures and stores messages received from WebSocket clients
-        class Collector extends EventEmitter {
-          constructor (filter, options) {
-            super()
-        
-            this.filter = filter || (() => true)
-            this.options = options
-            this.collected = []
-            this.ended = false
-        
-            // set an initial timeout if the time or idle options are set
-            const delay = this.options.time || this.options.idle
-            if (delay) this.timeout = setTimeout(this.end.bind(this), delay)
-          }
-        
-          capture (client, message) {
-            if (this.ended) return
-            // apply filtering
-            const result = this.filter({ client, message })
-            if (!result) return
-        
-            this.collected.push({ client, message })
-            this.emit('collect', { client, message })
-            // end collection if the maximum number of items are reached (according to the options)
-            if (this.options.max && this.collected.length >= this.options.max) this.end()
-            // if idle is set, reset timeout
-            if (this.options.idle && this.timeout) {
-              clearTimeout(this.timeout)
-              this.timeout = setTimeout(this.end.bind(this), this.options.idle)
-            }
-          }
-        
-          end () {
-            if (this.ended) return
-            this.ended = true
-            this.emit('end', this.collected)
-          }
-        }`
-      }, {
-        title: 'Request Schema Verification',
-        caption: 'Manually verifying request bodies for individual HTTP endpoints is highly inefficient. Using the <a href="http://npmjs.org/package/jsonschema" target="_blank">jsonschema</a> npm package, I put together a very simple payload validation system.',
-        code: `// schemas/guild.js
-        module.exports.push({
-          id: '/ModifyGuild',
-          type: 'object',
-          properties: {
-            prefix: { type: 'string', pattern: /^[^\\s ]{1,32}$/ }
-          },
-          additionalProperties: false
+        title: 'End-to-end Typed Routes',
+        caption: 'HTTP routes are end-to-end typed to ensure that request bodies are handled correctly and all responses are anticipated, including errors.',
+        lang: 'ts',
+        code: `// In one file, all routes are defined & configured. This file is part of a package that can be installed on clients to use these types.
+        // This example shows an endpoint to initiate a guild audit (a kind of background job).
+        export const postGuildAuditStart = route('POST', '/v4/guilds/:guild/audit/start', {
+          auth: 'require-simulate',
+          userPerms: KettuUserPermBits.ManageGuilds,
+          response: null as unknown as { status: 204 }
+            | typeof e.GuildAuditAlreadyComplete
+            | typeof e.GuildAuditAlreadyStarted
         })
         
-        // routes/guilds.js
-        router.patch('/:guild', ratelimiter('patch-guild'), failsafe(async (req, res) => {
-          if (!req.user.perms.has('MANAGE_GUILDS_GLOBAL')) {
-            return res.status(403).send({
-              code: 50001,
-              message: 'Missing access'
-            })
+        // kAPI-http is the service to handle HTTP traffic. It installs the above package and uses the types to strictly define route handlers.
+        // Request bodies, responses, errors, and all other properties are correctly typed based on the route definition.
+        export const postGuildAuditStart = handle(
+          Routes.postGuildAuditStart,
+          async (req, res) => {
+            if (!req.guildAccess.manageable) return res.error(Errors.MissingAccessVariant('h'))
+            if (req.guild.member_audit?.completed_at) return res.error(Errors.GuildAuditAlreadyComplete)
+            if (req.guild.member_audit?.started_at) return res.error(Errors.GuildAuditAlreadyStarted)
+            await re.guilds.get(req.guild.id).update({ member_audit: { audited: 0, started_at: Date.now(), last_member: '0' } }).run()
+            await re.queue.insert({ type: 'guild_audit_chunk', guild_id: req.guild.id, executes_at: Date.now() }).run()
+            return res.status(204).send()
           }
-        
-          const result = validate('/ModifyGuild', req.body)
-          if (!result.valid) {
-            return res.status(400).send({
-              code: 50004,
-              message: 'Invalid form body',
-              errors: result.errors
-            })
-          }
-        
-          // ...
-        }))`
+        )`
       }, {
-        title: 'Sharded Data Collection',
-        caption: `When a user visits the web dashboard, they need to be provided with a list of guilds (sort of big group chats in Discord) that they have permissions to manage.
+        title: 'Request Schema Validation',
+        caption: 'Zod is a super useful TypeScript package allowing us to validate URL queries and JSON request bodies, and to generate types for them.',
+        code: `// This route definition shows both.
+        export const postKettuMeGuild = route('POST', '/v4/kettu/@me/guilds/:guildAny', {
+          auth: 'require',
+          userTypes: 'kettu',
+          query: z.object({ skip_configs: zutil.queryBoolean().optional() }),
+          body: z.object({
+            name: z.string(),
+            icon: z.string().nullable(),
+            member_count: z.number()
+          }),
+          response: null as unknown as { status: 204 }
+        })
         
-        This problem becomes complicated, as the following needs to happen:
-            - The list of all guilds the user is in is fetched from Discord's API through OAuth2.
-            - A message is sent to all of Kettu's Bot shards, requesting the data for all those guilds.
-            - These messages are collected and the data aggregated to determine which guilds the user has permission to access, which is dependent on the guild's configuration stored in the database.
-            - Shards that provide no response should be marked as offline.
-
-        And on top of all of this, the process must happen as fast as possible to ensure a quality user experience.`,
-        code: `async function fetchUserGuilds () {
-          // Retrieve the user's guilds from Discord, or return an error if that fails
-          const result = await requestAs(dAPI.api.users('@me').guilds.get, req.user, { r })
-          if (result.status) {
-            return res.status(result.status).send({
-              code: result.code,
-              message: result.message
-            })
-          }
+        // In our internal handler, we can do something like this to validate the query and body.
+        const queryParsed = route.query.safeParse(req.query)
+        if (!queryParsed.success) return error(Errors.InvalidQuery, queryParsed.error.format())
         
-          // Find the configs for the guilds, where possible
-          const configs = await r.dbc.guilds
-            .filter(guild => r.expr(result.map(g => g.id)).contains(guild('id'))).run()
-        
-          // Construct the initial response object, defaulting all bots in all guilds to errored
-          // Also, mark guilds that Kettu isn't in as invitable
-          const response = result.map(g => {
-            const config = configs.find(c => c.id === g.id)
-            const invitable_perms = [1 << 3, 1 << 5]
-            const manageable = (g.owner || invitable_perms.some(p => (g.permissions & p) === p))
-            return config
-              ? {
-                  id: g.id,
-                  bots: Object.keys(config.configs),
-                  allowed: [],
-                  errored: Object.keys(config.configs),
-                  meta: {},
-                  lost: true,
-                  manageable
-                }
-              : (manageable ? { id: g.id, invitable: true } : null)
-          }).filter(g => g)
-        
-          // Track ACKs
-          let awaiting = []
-        
-          // Retrieve Guilds payload to send to all shards
-          // The shards will respond by sending the guild metadata, roles,
-          //   and the specific member object
-          const payload = response.map(g => ({
-            id: g.id,
-            meta: true,
-            roles: true,
-            members: [req.user.id]
-          }))
-        
-          // Start collecting
-          const start = Date.now()
-          const nonce = Math.round(Math.random() * 1e10).toString(16)
-          const filter = ({ message }) => message.op === 10 && message.n === nonce
-          // Create a collector which expires after 2s of inactivity
-          const collector = wss.createCollector(filter, { idle: 2000 })
-        
-          collector.on('collect', async ({ client, message }) => {
-            // Handle ACKs
-            if (awaiting.includes(client)) awaiting = awaiting.filter(c => c !== client)
-            if (message.a) {
-              awaiting.push(client)
-              return
-            }
-        
-            // Iterate over guilds
-            for (const guild of message.d) {
-              // Get the pending response and fail if there isn't one (should never happen)
-              const guild_response = response.find(g => g.id === guild.id)
-              if (!guild_response) continue
-              guild_response.lost = false
-        
-              // Set the guild metadata
-              const keys = [
-                'banner',
-                'icon',
-                'description',
-                'memberCount',
-                'name',
-                'nameAcronym',
-                'shardID'
-              ]
-              for (const k of Object.keys(guild.meta).filter(k => keys.includes(k))) {
-                guild_response.meta[k] = guild.meta[k]
-              }
-        
-              // Get the guild's config and create if it doesn't exist
-              let guild_config = configs.find(c => c.id === guild.id)
-              if (!guild_config || guild_response.invitable) {
-                guild_config = { id: guild.id, configs: { [client.session.user.id]: {} } }
-                await r.dbc.guilds.insert(guild_config).run()
-                guild_response.invitable = false
-                guild_response.bots = guild_response.errored = [client.session.user.id]
-                guild_response.allowed = []
-              }
-        
-              // Util function to mark a certain bot as allowed or not
-              function allowed (yay) {
-                const extracted = guild_response.errored
-                  .splice(guild_response.errored.indexOf(client.session.user.id), 1)[0]
-                if (yay) guild_response.allowed.push(extracted)
-              }
-        
-              // Allow if owner, otherwise check roles to allow or not
-              if (guild.meta.ownerID === req.user.id) allowed(true)
-              else {
-                const possible_roles = ['mod', 'admin'].map(r => {
-                  return guild_config.configs[client.session.user.id]?.mod?.role?.[r]
-                }).filter(r => r)
-                const member = guild.members.find(m => m.userID === req.user.id)
-                if (!member) continue
-                // If no roles are set up, default to ADMINISTRATOR and MANAGE_GUILD
-                if (possible_roles.length) {
-                  const has_roles = possible_roles.some(role => (member.roles || []).includes(role))
-                  allowed(has_roles)
-                } else allowed(guild_response.manageable)
-              }
-            }
-        
-            // If we aren't waiting for anything, return!
-            const waiting = response.filter(g => g.bots).map(g => g.errored.length)
-            if (!waiting.some(n => n > 0)) return collector.end()
-        
-            // And a nice little timeout
-            if (Date.now() - start > 1000 && awaiting.length === 0) return collector.end()
-          })
-        
-          // Default timeout
-          setTimeout(() => awaiting.length === 0 ? collector.end() : null, 2000)
-        
-          // Once ended, update cache and send the HTTP response
-          collector.once('end', async () => {
-            await r.dbc.users.get(req.user.id).update({
-              guilds: { cache: response, time: Date.now() }
-            }).run()
-            res.status(200).send({ guilds: response, cached: false })
-          })
-        
-          // Send the payload to start collecting responses
-          wss.sessions
-            .filter(s => s?.user?.type === 'kettu')
-            .forEach(s => s.send({ op: 10, d: payload, n: nonce }, r, false))
-        }`
+        if (req.headers['content-type'] !== 'application/json') return error(Errors.InvalidContentType)
+        const jsonParseFailed = await new Promise(resolve => jsonParser(req, res, resolve))
+        if (jsonParseFailed) return error(Errors.InvalidJSONBody)
+        const bodyParsed = route.body.safeParse(req.body)
+        if (!bodyParsed.success) return error(Errors.InvalidJSONBody, bodyParsed.error.format())`
       }, {
         title: 'Ratelimiting',
-        caption: 'To prevent excessive usage of Kettu\'s API, I implemented a ratelimiting system.',
-        code: `module.exports = ({ r }) => (bucket, mode = 'auto') => async (req, res, next) => {
-          // invalid configuration
-          if (mode === 'user' && !req.user) {
-            return res.status(500).send({
-              code: 40004,
-              message: 'Invalid route configuration (identifier)'
+        caption: 'To prevent excessive usage of Kettu\'s API, we have a ratelimiting system that we can easily change configurations for on the fly.',
+        code: `const path = req.route.path
+        const pathConfigs = await re.ratelimit_configs.getAll(path, { index: 'path' }).run()
+        // Find the relevant RatelimitBucketConfig for this path and method, falling back to the global config
+        let matchingConfig: DB.RatelimitConfigDB | null | undefined = pathConfigs.find(c => c.methods.includes(req.method.toLowerCase()))
+        if (!matchingConfig) matchingConfig = await re.ratelimit_configs.get('global').run()
+        if (matchingConfig === null) break
+        // Attempt to follow the ref if it exists, if it doesn't or leads to another ref then skip
+        const configBase = 'ref' in matchingConfig ? await re.ratelimit_configs.get(matchingConfig.ref).run() : matchingConfig
+        if (configBase === null || 'ref' in configBase) break
+
+        // Look for any matching overrides, which will become config, or otherwise set config to just configBase
+        const override = configBase.overrides.find(override => {
+          // All provided override options must match for the override to apply
+          // authenticated: if the user is or isn't authenticated, for optional endpoints
+          if ('authenticated' in override && override.authenticated !== Boolean(rreq.author)) return false
+          // user_ids: the user's ID must be in the list
+          if ('user_ids' in override && (!rreq.author || !override.user_ids?.includes(rreq.author.id))) return false
+          // types: the user's type must be in the list
+          if ('types' in override && (!rreq.author || !override.user_types?.includes(rreq.author.type || 'user'))) return false
+          // perms: the user's permissions must contain all permissions from ANY ONE of the provided permission bitmasks
+          if ('perms' in override && !override.user_perms?.find(p => ((rreq.author?.perms || 0) & p) === p)) return false
+          return true
+        })
+        const config = override || configBase
+
+        // Find any existing buckets for this config for the identifying user, and for the matching parameters
+        const identity = (configBase.default_scope === 'user' && rreq.author?.id) || rreq.oip
+        const params = configBase.params?.map(p => req.params[p] || null) || []
+        const existingBuckets = await re.ratelimit_buckets.getAll([configBase.id, identity, params], { index: 'config_id_identity_params' }).run()
+        const validBuckets = existingBuckets.filter(bucket => bucket.created_at >= Date.now() - config.per)
+
+        // If there are no buckets, create one. If there is one, either reject the request or increment the size
+        // Reduce is O(n) rather than O(logn)? of sorting
+        const latestBucket = validBuckets.length > 0 ? validBuckets.reduce((prev, curr) => curr.created_at > prev.created_at ? curr : prev) : null
+        if (latestBucket === null) {
+          const newBucket: Omit<DB.RatelimitBucketDB, 'id'> = { config_id: configBase.id, identity, params, created_at: Date.now(), size: 1 }
+          if (typeof config.id === 'number') newBucket.override_id = config.id
+          await re.ratelimit_buckets.insert(newBucket).run()
+          res.set(generateRatelimitHeaders(config, { id: '_', ...newBucket }))
+        } else {
+          if (latestBucket.size >= config.n) {
+            const now = Date.now()
+            res.set(generateRatelimitHeaders(config, latestBucket, now))
+            return res.status(429).json({
+              message: 'You are being ratelimited',
+              retry_after: (latestBucket.created_at + config.per - now) / 1000
             })
-          }
-        
-          // no ratelimits for kettu!
-          if (req.user?.type === 'kettu') return next()
-        
-          const ids = {
-            auto: req.user?.id || (req.headers['x-forwarded-for'] || '127.0.0.1'),
-            user: req.user?.id, ip: req.headers['x-forwarded-for'] || '127.0.0.1'
-          }
-          const id = ids[mode]
-        
-          const bucketdata = await r.dbc.ratelimit_configs.get(bucket).run()
-          if (!bucketdata) {
-            return res.status(500).send({
-              code: 40004,
-              message: 'Invalid route configuration (bucket)'
-            })
-          }
-        
-          const userbucket = await r.dbc.ratelimits.filter({
-            bucket: bucket,
-            identity: id
-          }).run()
-        
-          function applyHeaders (data, t = Date.now()) {
-            if (bucket === 'global') res.set('X-RateLimit-Global', 'true')
-            else res.removeHeader('X-RateLimit-Global')
-            res.set({
-              'X-RateLimit-Limit': bucketdata.n,
-              'X-RateLimit-Remaining': bucketdata.n - data.size,
-              'X-RateLimit-Reset': (data.creation + bucketdata.per) / 1000,
-              'X-RateLimit-Reset-After': (data.creation + bucketdata.per - t) / 1000,
-              'X-RateLimit-Bucket': bucketdata.id
-            })
-          }
-        
-          if (!userbucket.length) {
-            const newbucket = { bucket, identity: id, creation: Date.now(), size: 1 }
-            await r.dbc.ratelimits.insert(newbucket).run()
-            applyHeaders(newbucket)
           } else {
-            // delete duplicate buckets where necessary
-            const recent = userbucket.sort((a, b) => b.creation - a.creation)[0]
-            if (userbucket.length > 1) {
-              await r.dbc
-                .ratelimits
-                .filter(r.row('creation').lt(recent.creation))
-                .delete()
-                .run()
-            }
-            // ensure bucket hasn't expired
-            if (Date.now() - recent.creation >= bucketdata.per) {
-              // it has!
-              await r.dbc.ratelimits.get(recent.id).delete().run()
-              const newbucket = { bucket, identity: id, creation: Date.now(), size: 1 }
-              await r.dbc.ratelimits.insert(newbucket).run()
-              applyHeaders(newbucket)
-            } else {
-              // now check bucket overflow
-              if (recent.size > bucketdata.n) {
-                // they hit a ratelimit!
-                const t = Date.now()
-                applyHeaders(recent, t)
-                return res.status(429).send({
-                  message: 'You are being ratelimited',
-                  retry_after: (recent.creation + bucketdata.per - t) / 1000,
-                  global: Boolean(bucket === 'global')
-                })
-              } else {
-                // increment the size
-                recent.size += 1
-                await r.dbc
-                  .ratelimits
-                  .get(recent.id)
-                  .update({ size: recent.size })
-                  .run()
-                applyHeaders(recent)
-              }
-            }
+            latestBucket.size += 1
+            await re.ratelimit_buckets.get(latestBucket.id).update({ size: latestBucket.size }).run()
+            res.set(generateRatelimitHeaders(config, latestBucket))
           }
-        
-          next()
+        }
+
+        if (validBuckets.length < existingBuckets.length) {
+          await re.ratelimit_buckets
+            .getAll([configBase.id, identity, params], { index: 'config_id_identity_params' })
+            .filter(row => row('created_at').le(Date.now() - config.per))
+            .delete().run()
         }`
       }
     ],
     buttons: [
       {
-        text: 'Public API Documentation',
-        link: 'https://github.com/kettubot/kAPI-docs',
-        icon: BookOpen
-      }, {
         text: 'API Base Endpoint',
         link: 'https://api.kettu.cc',
         icon: ExternalLink
       }, {
-        text: 'API Test Page',
-        link: 'https://api.kettu.cc/test',
+        text: 'API Gateway Endpoint',
+        link: 'https://api.kettu.cc/v4/gateway',
         icon: ExternalLink
       }
     ]
@@ -576,7 +377,7 @@ export const projects: Record<string, Project> = {
       { text: 'Invite to Discord', link: 'https://kettu.cc/invite?ref=eeehhPortfolio', icon: Plus }
     ]
   },
-  'kettu-status-page': {
+  /* 'kettu-status-page': {
     title: 'Kettu\'s Status Page',
     tags: ['Frontend', 'Backend', 'JavaScript', 'Git', 'React'],
     description: `As Kettu grows, it becomes more important to schedule downtime and precisely inform users about ongoing interruptions in the service.
@@ -594,42 +395,40 @@ export const projects: Record<string, Project> = {
     buttons: [
       { text: 'Kettu Status', link: 'https://status.kettu.cc', icon: BarChart }
     ]
-  },
+  }, */
   'kettu-website': {
     title: 'Kettu\'s Website',
     tags: ['Frontend', 'Backend', 'JavaScript', 'TypeScript', 'Git', 'React'],
-    description: `Kettu's website provides an interface where users can read documentation, view dashboards for their servers, and find links to our support server and for inviting the bot.
+    description: `Kettu's website provides an interface where users can read documentation, view dashboards for their servers, and find links to our support server and for inviting the bot. It also hosts our admin dashboard, which will eventually prevent us from needing to ever access the servers directly.
     
-    The website in it's <a href="https://kettu.cc" target="_blank">current state</a> is a mess of code and design, which is fairly inconsistent.
-    
-    However, alongside the development of version 4, I'm producing a new website. Instead of the mess of non-frameworked HTML/CSS/JS, the new website is built with next.js and React. The goal of this change is to improve readability of code, and introduce a more consistent design specification.
-    
-    Note: the new website is heavily under construction, and there aren't many public pages yet.`,
+    Recently, I improved the website from a mess of vanilla JavaScript to a neat web application, built with Next.js and React. The goal of this change was to improve readability of code and introduce a more consistent design specification, which it has been fairly successful doing, but more can always be done.`,
     buttons: [
-      { text: 'New Website Dev Build', link: 'https://dev.kettu.cc', icon: ExternalLink }
+      { text: 'Home Page', link: 'https://kettu.cc', icon: ExternalLink },
+      { text: 'Documentation', link: 'https://kettu.cc/docs', icon: ExternalLink }
     ]
   },
   'kettu-kdjs': {
-    title: 'kdjs (Kettu & discord.js)',
+    title: 'kDjs (Kettu & discord.js)',
     tags: ['Libraries', 'Open Source', 'JavaScript', 'TypeScript', 'Git'],
     description: `Kettu uses a popular discord bot library, <a href="https://github.com/discordjs/discord.js" target="_blank">discord.js</a>. However, the construction of our custom API and extended functionality caused the library to become more and more limiting.
     
-    To overcome this issue, I maintain a small project called 'kdjs' which extends the library's functionality specifically for Kettu. It extends the native classes to add a 'kettu' property, which in turn provides access to a new object with the specific information for that object relating to Kettu.
+    To overcome this issue, I maintain a small project called 'kDjs' which extends the library's functionality specifically for Kettu. It extends the native classes to add a 'kettu' property, which in turn provides access to a new object with the specific information for that object relating to Kettu.
     
     On top of this, the library also maintains a double websocket connection (with Discord and kAPI), where it's crucial that both connections are consistently functional.`,
     buttons: [
-      { text: 'kdjs GitHub', link: 'https://github.com/kettubot/kdjs', icon: GitHub }
+      { text: 'kDjs GitHub', link: 'https://github.com/kettubot/kdjs', icon: GitHub },
+      { text: 'Our kDjs Docs', link: 'https://kettu.cc/docs/kdjs', icon: ExternalLink },
     ]
   },
   'moontime': {
     title: 'Moontime',
-    tags: ['Libraries', 'Utilities', 'Open Source', 'JavaScript', 'Git'],
+    tags: ['Libraries', 'Utilities', 'Open Source', 'JavaScript', 'TypeScript', 'Git'],
     starred: true,
     description: `Beginning as a joke between friends, Moontime is now a totally custom timekeeping system based on the lunar cycle. While totally arbitrary, with only minor relations to solar-based time, this system is very accurate and currently available as a Chrome new tab page extension, used by tens of people all over the city.
     
     Not only is the epoch of this system the release date of Bonnie Tyler's <a href="https://www.youtube.com/watch?v=lcOxhH8N3Bo" target="_blank">Total Eclipse of the Heart</a>, this library also synchronises to a centralised API, allowing users to keep their clocks perfectly in sync - unless their computer is offline, in which case time is calculated off the local time.`,
     buttons: [
-      { text: 'Library GitHub', link: 'https://github.com/eeehh/moontime', icon: GitHub },
+      { text: 'Library GitHub', link: 'https://github.com/LachlanWalls/moontime', icon: GitHub },
       { text: 'Chrome Extension', link: 'https://chrome.google.com/webstore/detail/moon/pkmifcpdpojpgejapnpedemfpfddflee', icon: ExternalLink },
       { text: 'Extension GitHub', link: 'https://github.com/eeehh/moontime_extension', icon: GitHub }
     ]
@@ -643,7 +442,7 @@ export const projects: Record<string, Project> = {
     
     I've used plob in a couple of my personal projects, most notably <a href="#section-kettu-status">Kettu Status</a> and <a href="#section-sentral">sentral</a>.`,
     buttons: [
-      { text: 'plob', link: 'https://github.com/eeehh/plob', icon: GitHub }
+      { text: 'plob', link: 'https://github.com/LachlanWalls/plob', icon: GitHub }
     ]
   },
   'github-repo-sync': {

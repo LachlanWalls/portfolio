@@ -9,7 +9,8 @@ export default function Sidebar ({ isSidebarShowing, setIsSidebarShowing }: { is
     <h1>Lachlan Walls</h1>
     <h3>Full-Stack Web Developer</h3>
 
-    <a href='https://github.com/eeehh' target='_blank' rel='noreferrer'><GitHub size={16} color='white' style={{ marginRight: 6 }}/>eeehh</a>
+    <a href='https://github.com/LachlanWalls' target='_blank' rel='noreferrer'><GitHub size={16} color='white' style={{ marginRight: 6 }}/>Lachlan Walls (formal)</a>
+    <a href='https://github.com/eeehh' target='_blank' rel='noreferrer'><GitHub size={16} color='white' style={{ marginRight: 6 }}/>eeehh (personal)</a>
 
     <span>Websites</span>
     <a href='#dynodel'>Dynodel <Star size={16}/></a>
@@ -22,7 +23,7 @@ export default function Sidebar ({ isSidebarShowing, setIsSidebarShowing }: { is
     <span>Kettu</span>
     <a href='#kettu-api'>kAPI <Star size={16}/></a>
     <a href='#kettu-bot'>The Bot</a>
-    <a href='#kettu-status-page'>Status Page</a>
+    {/* <a href='#kettu-status-page'>Status Page</a> */}
     <a href='#kettu-website'>Website</a>
     <a href='#kettu-kdjs'>kdjs</a>
 

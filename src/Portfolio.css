@@ -12,7 +12,7 @@ main {
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  margin: -60px 20px 0 340px;
+  margin: -65px 20px 0 340px;
   position: relative;
   transition: transform 0.2s, width 0.2s;
 }
@@ -53,7 +53,7 @@ main table td div {
 }
 
 main table td:nth-child(1) { padding-right: 24px }
-main table td:nth-child(8) { padding-left: 12px }
+main table td:nth-child(9) { padding-left: 12px }
 
 main table td div[data-level='0'] { background-color: transparent }
 main table td div[data-level='1'] { background-color: rgba(255, 255, 255, 0.2) }
