@@ -1,4 +1,4 @@
-import { BarChart, BookOpen, Code, ExternalLink, GitHub, Icon, Plus } from 'react-feather'
+import { BookOpen, Code, ExternalLink, GitHub, Icon, Plus } from 'react-feather'
 
 export interface Snippet {
   title: string

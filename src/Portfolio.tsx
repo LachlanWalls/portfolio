@@ -20,6 +20,7 @@ const tech = {
   'Java': { years: [0, 0, 0, 0, 0, 2, 2], level: 'Competent' },
   'MySQL': { years: [0, 0, 1, 1, 2, 3, 3], level: 'Advanced' },
   'Swift': { years: [2, 1, 0, 0, 0, 0, 1], level: 'Learning' },
+  'PHP': { years: [0, 0, 0, 0, 0, 0, 2], level: 'Competent' },
 
   'Git': { years: [0, 1, 2, 2, 2, 3, 3], level: 'Advanced' },
   'Docker': { years: [0, 0, 0, 0, 1, 2, 3], level: 'Advanced' },

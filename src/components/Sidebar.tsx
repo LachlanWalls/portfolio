@@ -1,5 +1,5 @@
 import React from 'react'
-import { GitHub, Star, X } from 'react-feather'
+import { GitHub, Linkedin, Star, X } from 'react-feather'
 import './Sidebar.css'
 
 export default function Sidebar ({ isSidebarShowing, setIsSidebarShowing }: { isSidebarShowing: boolean, setIsSidebarShowing: React.Dispatch<React.SetStateAction<boolean>> }) {
@@ -10,7 +10,8 @@ export default function Sidebar ({ isSidebarShowing, setIsSidebarShowing }: { is
     <h3>Full-Stack Web Developer</h3>
 
     <a href='https://github.com/LachlanWalls' target='_blank' rel='noreferrer'><GitHub size={16} color='white' style={{ marginRight: 6 }}/>Lachlan Walls (formal)</a>
-    <a href='https://github.com/eeehh' target='_blank' rel='noreferrer'><GitHub size={16} color='white' style={{ marginRight: 6 }}/>eeehh (personal)</a>
+    <a href='https://github.com/dawnniie' target='_blank' rel='noreferrer'><GitHub size={16} color='white' style={{ marginRight: 6 }}/>dawnniie (personal)</a>
+    <a href='https://www.linkedin.com/in/lachlanwalls' target='_blank' rel='noreferrer'><Linkedin size={16} color='white' style={{ marginRight: 6 }}/>Lachlan Walls</a>
 
     <span>Websites</span>
     <a href='#dynodel'>Dynodel <Star size={16}/></a>
