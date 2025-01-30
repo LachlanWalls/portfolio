@@ -1,0 +1,56 @@
+.selection button {
+  background-color: transparent;
+  padding: 8px 16px;
+  border-radius: 8px;
+  margin-right: 8px;
+  border: none;
+  cursor: pointer;
+  font-family: 'Asap', 'Helvetica', sans-serif;
+  font-size: 14px;
+  transition: background-color 0.1s;
+
+  &:hover {
+    background-color: rgba(70, 79, 180, 0.15);
+  }
+
+  &:active {
+    background-color: rgba(70, 79, 180, 0.3);
+  }
+
+  &[data-selected='true'] {
+    background-color: rgba(70, 79, 180, 0.15);
+    border-radius: 8px 8px 0 0;
+  }
+}
+
+.snippets {
+  margin-bottom: 16px;
+}
+
+.snippet {
+  background-color: rgba(70, 79, 180, 0.15);
+  padding: 12px 12px 4px 12px;
+  border-radius: 8px;
+  display: none;
+
+  &[data-selected='true'] {
+    display: block;
+  }
+
+  &:nth-child(1) {
+    border-radius: 0 8px 8px 8px;
+  }
+
+  p {
+    margin: 8px 8px 20px 8px;
+  }
+}
+
+.hljs {
+  border-radius: 4px;
+  padding: 16px;
+  margin-bottom: 8px;
+  overflow: auto;
+  white-space: pre;
+  font-family: monospace;
+}

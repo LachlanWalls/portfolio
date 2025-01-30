@@ -1,0 +1,68 @@
+.button-link {
+  padding: 8px 12px;
+  border-radius: 30px;
+  border: 1px solid lightgray;
+  width: fit-content;
+  cursor: pointer;
+  transition: background-color 0.1s;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: rgba(0, 0, 0, 0.87);
+  user-select: none;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+
+  span {
+    font-family: 'Asap', 'Helvetica', sans-serif;
+    font-size: 14px;
+    user-select: none;
+  }
+
+  svg {
+    margin-left: 8px;
+  }
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  background-color: white;
+  color: black;
+  font-size: 14px;
+  cursor: pointer;
+  transition-duration: 0.05s;
+  user-select: none;
+
+  &:hover {
+    opacity: 1
+  }
+
+  &[data-color='primary'] {
+    background-color: #006979;
+    color: white;
+  }
+
+  &[data-size='large'] {
+    gap: 6px;
+    padding: 6px 16px;
+    font-size: 20px;
+  }
+
+  span {
+    font-family: 'Asap', 'Helvetica', sans-serif;
+    font-size: inherit;
+    user-select: none;
+  }
+
+  svg {
+    cursor: pointer;
+    margin-left: 4px;
+    opacity: 0.7;
+  }
+}

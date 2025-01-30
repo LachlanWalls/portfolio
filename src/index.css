@@ -1,9 +1,17 @@
+html {
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
 body {
+  position: relative;
   margin: 0;
   font-family: 'Asap', 'Helvetica', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: rgb(54, 125, 129);
+  height: 100%;
   overflow-y: scroll;
   overflow-x: hidden;
   color: rgb(255, 255, 255, 0.87);

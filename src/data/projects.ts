@@ -1,4 +1,7 @@
-import { BookOpen, Code, ExternalLink, GitHub, Icon, Plus } from 'react-feather'
+import { BookOpen, Code, ExternalLink, GitHub, Icon } from 'react-feather'
+
+export const TECH_FILTERS = ['JavaScript', 'TypeScript', 'Python', 'SQL', 'Git', 'Docker', 'React', 'Vite', 'Node.js']
+export const TYPE_FILTERS = ['Frontend', 'Backend', 'Mobile', 'DevOps', 'Games', 'Libraries', 'Utils', 'Open source']
 
 export interface Snippet {
   title: string
@@ -8,6 +11,7 @@ export interface Snippet {
 }
 
 export interface Project {
+  id: string
   title: string
   starred?: true
   tags: string[]
@@ -17,16 +21,19 @@ export interface Project {
   buttons?: { text: string, link: string, icon: Icon }[]
 }
 
-export const projects: Record<string, Project> = {
-  'dynodel': {
+export const projects: Project[] = [
+  {
+    id: 'dynodel',
     title: 'Dynodel',
-    tags: ['Frontend', 'Backend', 'Games', 'Utilities', 'JavaScript', 'Python', 'DevOps'],
+    tags: ['Frontend', 'Backend', 'Games', 'Utils', 'JavaScript', 'Python', 'DevOps', 'Git', 'Node.js', 'Docker', 'Mobile'],
     starred: true,
     description: `Dynodel is a collection of some of my small but amusing creations, suggested by friends or just random ideas.
     
     For these projects, the focus wasn't on beautiful design or perfect functionality - it was on making something fun.
     
         <a href="https://bruhsynth.dynodel.com" target="_blank">bruhsynth</a> is an online keyboard which plays a number of unique sound effects.
+
+        <a href="https://im.dynodel.com" target="_blank">lachlanim</a> is a very simple websocket-based online chat room.
         
         <a href="https://rhythm.dynodel.com" target="_blank">lachlanrhythm</a> is a tool for playing back polyrhythms.
         
@@ -39,73 +46,78 @@ export const projects: Record<string, Project> = {
       { text: 'Dynodel Home', link: 'https://dynodel.com', icon: ExternalLink }
     ]
   },
-  'lachlanprogramming': {
+  {
+    id: 'lachlanprogramming',
     title: 'lachlanprogramming',
-    tags: ['Frontend', 'Utilities', 'JavaScript', 'TypeScript', 'Git', 'React'],
+    tags: ['Frontend', 'Utils', 'JavaScript', 'TypeScript', 'Git', 'React', 'Open source', 'Docker'],
     starred: true,
-    description: `lachlanprogramming is a website I decided to make while bored, to both practise my skills and knowledge and to share said knowledge with more people. It features useful tools and simulators to learn about and play with certain programming concepts.
+    description: `lachlanprogramming is a website I decided to make while bored, to both practise my skills and knowledge and to hopefully share this knowledge with more people. It features useful tools and simulators to learn about and play with certain programming concepts.
     
     At the moment there's only one tool, VSML, which is an assembly-like language/basic programming interface that helps to learn how the CPU fetch-execute cycle works and runs programs. I plan to work on more tools in the near future.`,
     buttons: [
+      { text: 'lachlanprogramming', link: 'https://github.com/dawnniie/programming', icon: GitHub },
       { text: 'lachlanprogramming', link: 'https://programming.dynodel.com', icon: Code }
     ]
   },
-  'lachlanworld': {
+  {
+    id: 'lachlanworld',
     title: 'lachlanworld',
-    tags: ['Frontend', 'Backend', 'Games', 'JavaScript', 'Python', 'MySQL'],
+    tags: ['Frontend', 'Backend', 'Games', 'JavaScript', 'TypeScript', 'Python', 'SQL', 'Git', 'Node.js'],
     description: `My journey into multiplayer open-world games started and ended (at least for now) with lachlanworld.
     
     lachlanworld is a website where anyone who joins is placed in an open world with everyone else currently in the game. Players can move and explore around the small environment, and at one stage were able to interact with one another.
     
     As an added bonus, the day-night cycle in lachlanworld is based directly on moontime!
     
-    Unfortunately, a combination of difficulties with performance and CORS issues ended with this project being placed on pause. However it's something I'd definitely like to get back into someday.`,
+    Unfortunately, a combination of difficulties with performance and CORS issues ended with this project being placed on pause. However it's something I'd definitely like to get back into someday. (In fact, I have been recently- maybe it'll be coming back soon!)`,
     image: 'lachlanworld.png'
   },
-  'lachlantransfer': {
+  {
+    id: 'lachlantransfer',
     title: 'lachlantransfer',
-    tags: ['Frontend', 'Backend', 'Vite', 'React', 'Utilities', 'JavaScript', 'TypeScript', 'S3'],
+    tags: ['Frontend', 'Backend', 'Vite', 'React', 'Utils', 'TypeScript', 'Git', 'Node.js', 'Mobile', 'Open source'],
     description: `When I moved on from my <a href="https://bitprostore.com/wp-content/uploads/2020/08/mac_mb13_5decf_00967.jpg" target="_blank">2010 macbook</a>, I was pretty disappointed to see the lack of decent cross-platform file transfer options for my Windows laptop. And thus, lachlantransfer was born.
     
     lachlantransfer is very simple. Anyone can upload a file, and anybody who was on the site when the file was uploaded will be able to view and download it. I even added some i18n, with the help of Google Translate (not my proudest moment).
     
-    More recently, I've updated lachlantransfer to use Vite & React (or more specifically Preact) with TypeScript, instead of just Vanilla JS. I also took this opportunity to touch up the UI a little and add some cute animal icons for different users.`,
+    More recently, I've updated lachlantransfer to use Vite & Preact (it's basically React) with TypeScript, instead of just Vanilla JS. I also took this opportunity to touch up the UI a little and add some cute animal icons for different users.`,
     buttons: [
       { text: 'lachlantransfer', link: 'https://github.com/LachlanWalls/lachlantransfer', icon: GitHub },
       { text: 'lachlantransfer', link: 'https://transfer.dynodel.com', icon: ExternalLink }
     ]
   },
-  'lachlanblackjack': {
+  {
+    id: 'lachlanblackjack',
     title: 'lachlanblackjack',
-    tags: ['Frontend', 'Backend', 'Games', 'JavaScript'],
+    tags: ['Frontend', 'Backend', 'Games', 'Git', 'TypeScript', 'Node.js'],
     description: `In a Year 11 Software class, we were doing some basic programming with a deck of cards, and the challenge was to make a tkinter implementation of blackjack in Python. I took the rebellious approach of using a <em>different language</em> (oh the horror!) and making a web version instead.
     
-    And thus, lachlanblackjack was born. And that wasn't enough, so I made it multiplayer too. And <em>that</em> wasn't enough either, so recently, I also added a basic currency (lachlancoin) and bank (lachlanbank) used to manage a virtual currency that can be gambled within the game.
+    That's the origin of lachlanblackjack. And that wasn't enough, so I made it multiplayer too. And <em>that</em> wasn't enough either, so recently, I also added a basic currency (lachlancoin) and bank (lachlanbank) used to manage a virtual currency that can be gambled within the game.
     
-    There are, of course, a few bugs needing to be ironed out and some gameplay mechanics that aren't quite right. But I made the game to entertain myself and my friends, and it thoroughly achieved that purpose, so I'd consider it a success.
-    
-    Note: both lachlanblackjack and lachlanbank require a login, because, well, that's just how I made them.`,
+    There are, of course, a few bugs needing to be ironed out and some gameplay mechanics that aren't quite right. But I made the game to entertain myself and my friends, and it thoroughly achieved that purpose, so I'd consider it a success.`,
     buttons: [
       { text: 'lachlanblackjack', link: 'https://blackjack.dynodel.com', icon: ExternalLink },
       { text: 'lachlanbank', link: 'https://bank.dynodel.com', icon: ExternalLink }
     ]
   },
-  'sentral': {
+  {
+    id: 'sentral',
     title: 'sentral',
-    tags: ['Frontend', 'Backend', 'Utilites', 'Open Source', 'JavaScript', 'MySQL', 'Git'],
+    tags: ['Frontend', 'Backend', 'Utilites', 'Open Source', 'JavaScript', 'MySQL', 'Git', 'Node.js', 'Open source'],
     description: `'Sentral' is the name of the management system my high school used for attendence, timetabling, announcements, detentions... basically everything. In 2019/2020, the system underwent a rewrite, producing a flawed product which was arguably worse than the original and caused a number of problems for the school.
 
     Thus in 2021, I made my own (limited) version, as a proof of concept that the user interface for students could be significantly improved. This project also doubled as my Year 12 major project, which included two iterations of the structured approach to software development.`,
     buttons: [
-      { text: 'sentral', link: 'https://github.com/eeehh/sentral', icon: GitHub },
+      { text: 'sentral', link: 'https://github.com/dawnniie/sentral', icon: GitHub },
       { text: 'Formal Project Documentation (inc. images)', link: 'https://docs.google.com/document/d/1RXdQvviiEfYiRxVHKKYGxx5UcVv0b853iTDQysb5_FY/view', icon: BookOpen }
     ]
   },
-  'kettu-api': {
+  {
+    id: 'kettu-api',
     title: 'kAPI (Kettu\'s API)',
-    tags: ['Backend', 'JavaScript', 'TypeScript', 'Git', 'DevOps', 'S3'],
+    tags: ['Backend', 'JavaScript', 'TypeScript', 'Git', 'DevOps', 'SQL', 'Docker', 'Node.js'],
     starred: true,
-    description: `Kettu is a custom Discord chat bot, with a dedicated API as a layer on top of the database, which interfaces with end users through the web dashboard and the bot process. It featuhostsres a WebSocket gateway for realtime events and a RESTful API, acting in some ways as a sort of CRUD layer.
+    description: `Kettu is a custom Discord chat bot with a dedicated API, which interfaces end users (through the web dashboard) and the bot (comprising multiple distributed processes) with the database. It hosts a WebSocket gateway for realtime events and a RESTful API, acting in some ways as a sort of CRUD layer - but also with many mechanisms that are more advanced.
 
     This project is always ongoing, and really interesting to me. It has quite a large functionality scope for a chat bot and needs to handle account authentication (through OAuth2), permission structures, and interaction with Discord's API. The API is written in a modular format with a focus on readability, easy extensibility and end-to-end type safety.
         
@@ -120,12 +132,12 @@ export const projects: Record<string, Project> = {
         - End-to-end typed HTTP routes with zod for schema validation
         - End-to-end typed Gateway protocol, also using zod for schema validation
         - RethinkDB database linked to external volume for data integrity and automated data migrations
-        - Temporal interfaces (database feed, cron actions, and scheduled operations)
+        - "Temporal" interfaces focusing on high availability (database feed, cron actions, and scheduled operations)
         - S3-based CDN to self-host images and reduce load on the origin servers
         - Highly configurable monitoring for all high-frequency events with automated alerting systems
         - Discord proxy for cross-shard ratelimiting
 
-    Unfortunately, the code for this project isn't open source; however below I have featured a few snippets of interesting code. There is so much more that is really cool but difficult to show, so if you're curious let me know.`,
+    Unfortunately, the code for this project isn't open source; however below I have featured a few snippets of interesting code. There is so much more that is really cool but difficult to show, so if you're curious, let me know.`,
     snippets: [
       {
         title: 'End-to-end Typed Routes',
@@ -256,9 +268,10 @@ export const projects: Record<string, Project> = {
       }
     ]
   },
-  'kettu-bot': {
+  {
+    id: 'kettu-bot',
     title: 'Kettu (The Bot)',
-    tags: ['Backend', 'JavaScript', 'Git'],
+    tags: ['Backend', 'JavaScript', 'TypeScript', 'Git', 'Docker', 'Mobile'],
     description: `Kettu is a custom Discord chat bot, serving about 500,000 users across 2000+ Discord servers (big group chats).
     
     As the project scales in size, so must the software architecture, leading to the development of <a href="#section-kettu-api">Kettu's API</a> and separating the singular bot process into multiple shards.
@@ -365,21 +378,31 @@ export const projects: Record<string, Project> = {
             {
               type: 'member',
               options: { search: true },
-              input: 'eeehh',
+              input: 'dawnniie',
               output: { /* discord.js member object */ }
             }
           ]
         
         }`
       }
-    ],
-    buttons: [
-      { text: 'Invite to Discord', link: 'https://kettu.cc/invite?ref=eeehhPortfolio', icon: Plus }
     ]
   },
-  /* 'kettu-status-page': {
+  {
+    id: 'kettu-website',
+    title: 'Kettu\'s Website',
+    tags: ['Frontend', 'Backend', 'JavaScript', 'TypeScript', 'Git', 'React', 'Docker'],
+    description: `Kettu's website provides an interface where users can read documentation, view dashboards for their servers, and find links to our support server and for inviting the bot. It also hosts our admin dashboard, which will eventually prevent us from needing to ever access the servers directly.
+    
+    Recently, I improved the website from a mess of vanilla JavaScript to a neat web application, built with Next.js and React. The goal of this change was to improve readability of code and introduce a more consistent design specification, which it has been fairly successful doing, but more can always be done.`,
+    buttons: [
+      { text: 'Kettu\'s Website', link: 'https://kettu.cc', icon: ExternalLink }
+    ]
+  },
+  {
+    id: 'kettu-status-page',
     title: 'Kettu\'s Status Page',
-    tags: ['Frontend', 'Backend', 'JavaScript', 'Git', 'React'],
+    tags: ['Frontend', 'Backend', 'TypeScript', 'Git', 'React', 'Docker', 'Vite', 'DevOps'],
+    starred: true,
     description: `As Kettu grows, it becomes more important to schedule downtime and precisely inform users about ongoing interruptions in the service.
     
     To accomodate this need, I developed a status page to automatically display current status. Certain users can add interruptions (either incidents or maintenance), which then update the status of affected services during their downtimes.
@@ -393,61 +416,70 @@ export const projects: Record<string, Project> = {
         - Interruptions (incidents and maintenance)
         - Manual status override`,
     buttons: [
-      { text: 'Kettu Status', link: 'https://status.kettu.cc', icon: BarChart }
-    ]
-  }, */
-  'kettu-website': {
-    title: 'Kettu\'s Website',
-    tags: ['Frontend', 'Backend', 'JavaScript', 'TypeScript', 'Git', 'React'],
-    description: `Kettu's website provides an interface where users can read documentation, view dashboards for their servers, and find links to our support server and for inviting the bot. It also hosts our admin dashboard, which will eventually prevent us from needing to ever access the servers directly.
-    
-    Recently, I improved the website from a mess of vanilla JavaScript to a neat web application, built with Next.js and React. The goal of this change was to improve readability of code and introduce a more consistent design specification, which it has been fairly successful doing, but more can always be done.`,
-    buttons: [
-      { text: 'Home Page', link: 'https://kettu.cc', icon: ExternalLink },
-      { text: 'Documentation', link: 'https://kettu.cc/docs', icon: ExternalLink }
+      { text: 'Kettu Status', link: 'https://status.kettu.cc', icon: ExternalLink }
     ]
   },
-  'kettu-kdjs': {
-    title: 'kDjs (Kettu & discord.js)',
-    tags: ['Libraries', 'Open Source', 'JavaScript', 'TypeScript', 'Git'],
+  {
+    id: 'kettu-kdjs',
+    title: 'kdjs (Kettu & discord.js)',
+    tags: ['Libraries', 'Open Source', 'JavaScript', 'TypeScript', 'Git', 'Node.js', 'Open source'],
     description: `Kettu uses a popular discord bot library, <a href="https://github.com/discordjs/discord.js" target="_blank">discord.js</a>. However, the construction of our custom API and extended functionality caused the library to become more and more limiting.
     
-    To overcome this issue, I maintain a small project called 'kDjs' which extends the library's functionality specifically for Kettu. It extends the native classes to add a 'kettu' property, which in turn provides access to a new object with the specific information for that object relating to Kettu.
+    To overcome this issue, I maintain a small project called 'kdjs' which extends the library's functionality specifically for Kettu. It extends the native classes to add a 'kettu' property, which in turn provides access to a new object with the specific information for that object relating to Kettu.
     
     On top of this, the library also maintains a double websocket connection (with Discord and kAPI), where it's crucial that both connections are consistently functional.`,
     buttons: [
-      { text: 'kDjs GitHub', link: 'https://github.com/kettubot/kdjs', icon: GitHub },
-      { text: 'Our kDjs Docs', link: 'https://kettu.cc/docs/kdjs', icon: ExternalLink },
+      { text: 'kdjs', link: 'https://github.com/kettubot/kdjs', icon: GitHub },
+      { text: 'Changelog', link: 'https://github.com/kettubot/kdjs/blob/main/changelog.md', icon: BookOpen },
+      { text: 'Documentation', link: 'https://kettu.cc/docs/kdjs#/kdjs/general/welcome', icon: ExternalLink },
     ]
   },
-  'moontime': {
+  {
+    id: 'moontime',
     title: 'Moontime',
-    tags: ['Libraries', 'Utilities', 'Open Source', 'JavaScript', 'TypeScript', 'Git'],
+    tags: ['Frontend', 'Libraries', 'Utils', 'Open Source', 'JavaScript', 'TypeScript', 'Git', 'Open source'],
     starred: true,
     description: `Beginning as a joke between friends, Moontime is now a totally custom timekeeping system based on the lunar cycle. While totally arbitrary, with only minor relations to solar-based time, this system is very accurate and currently available as a Chrome new tab page extension, used by tens of people all over the city.
     
     Not only is the epoch of this system the release date of Bonnie Tyler's <a href="https://www.youtube.com/watch?v=lcOxhH8N3Bo" target="_blank">Total Eclipse of the Heart</a>, this library also synchronises to a centralised API, allowing users to keep their clocks perfectly in sync - unless their computer is offline, in which case time is calculated off the local time.`,
     buttons: [
-      { text: 'Library GitHub', link: 'https://github.com/LachlanWalls/moontime', icon: GitHub },
-      { text: 'Chrome Extension', link: 'https://chrome.google.com/webstore/detail/moon/pkmifcpdpojpgejapnpedemfpfddflee', icon: ExternalLink },
-      { text: 'Extension GitHub', link: 'https://github.com/eeehh/moontime_extension', icon: GitHub }
+      { text: 'moontime', link: 'https://github.com/LachlanWalls/moontime', icon: GitHub },
+      { text: 'moontime', link: 'https://moon.dynodel.com', icon: ExternalLink },
+      { text: 'Chrome Extension', link: 'https://chrome.google.com/webstore/detail/moon/pkmifcpdpojpgejapnpedemfpfddflee', icon: ExternalLink }
     ]
   },
-  'plob': {
+  {
+    id: 'rethinkdb-ts-extra',
+    title: 'rethinkdb-ts-extra',
+    tags: ['Backend', 'Libraries', 'Open source', 'TypeScript', 'Git'],
+    starred: true,
+    description: `The database behind Kettu is RethinkDB, which is a database I enjoy using thanks to the high standard of DX. Unfortunately it's now in maintenance status, so I wouldn't use it for any new projects, but it still works well for Kettu- and my co-developer enjoys using it too.
+    
+    The driver we previously used is <a href="https://www.npmjs.com/package/rethinkdb-ts" target="_blank">rethinkdb-ts</a>, but when I began to upgrade kAPI with stricter typing rules, I found that this package didn't support the level of type safety that I was looking for. More and more I began to make modifications to the package, until it reached the point where it made more sense to branch out and turn my modifications into an open source package.
+    
+    It supports a couple of useful bits and pieces, but the main purpose of rethinkdb-ts-extra is the support for end-to-end type safety. Every structure in our database has a data schema in TypeScript, and rethinkdb-ts-extra ensures that every single database fetch and update call conforms to the appropriate schema.`,
+    buttons: [
+      { text: 'rethinkdb-ts-extra', link: 'https://github.com/dawnniie/rethinkdb-ts-extra', icon: GitHub },
+      { text: 'Wiki', link: 'https://github.com/dawnniie/rethinkdb-ts-extra/wiki', icon: BookOpen }
+    ]
+  },
+  {
+    id: 'plob',
     title: 'plob',
-    tags: ['Frontend', 'Libraries', 'Open Source', 'JavaScript', 'Git'],
+    tags: ['Frontend', 'Libraries', 'Open Source', 'JavaScript', 'Git', 'Open source'],
     description: `Now I'll be the first to admit that 'plob' is a rather meaningless name. But it's actually a tactic to increase interest in the project, after all, 'single-page-application-router' is very long and boring.
     
     That's what plob is though, a very simple router for single page applications, with support for 'static' (always rendered) and 'dynamic' (rendered on the fly) pages. It uses the History API to update the page URL on navigation without actually reloading.
     
-    I've used plob in a couple of my personal projects, most notably <a href="#section-kettu-status">Kettu Status</a> and <a href="#section-sentral">sentral</a>.`,
+    I've used plob in a couple of my personal projects, most notably <a href="#section-sentral">sentral</a> and a previous version of <a href="#section-kettu-status">Kettu Status</a>.`,
     buttons: [
       { text: 'plob', link: 'https://github.com/LachlanWalls/plob', icon: GitHub }
     ]
   },
-  'github-repo-sync': {
+  {
+    id: 'github-repo-sync',
     title: 'github-repo-sync',
-    tags: ['Backend', 'Utilities', 'Open Source', 'JavaScript', 'Git'],
+    tags: ['Backend', 'Utils', 'Open Source', 'JavaScript', 'Git', 'Node.js', 'Open source'],
     description: `Unlike plob, github-repo-sync does exactly what the name implies. It's a small HTTP server used to execute scripts when commits are pushed to a GitHub repository, usually to update a remote clone and restart the service.
     
     The project is really very simple, and based on a DigitalOcean tutorial I used a while ago. I also advertise it as 'zero dependencies', but let's be real, it's not getting bundled for the web so that's pretty irrelevant.
@@ -458,7 +490,8 @@ export const projects: Record<string, Project> = {
       { text: 'Refence Tutorial', link: 'https://www.digitalocean.com/community/tutorials/how-to-use-node-js-and-github-webhooks-to-keep-remote-projects-in-sync', icon: ExternalLink }
     ]
   },
-  'number-guess-game': {
+  {
+    id: 'number-guess-game',
     title: 'number guess game',
     tags: ['Games'],
     description: `This project is unlike the others, but I'm proud of it, and there's a short story to explain how it came about. This happened in July 2017 (so I was 13), before I made my way into web development, and I was instead making iOS apps (none of them were any good).
@@ -469,7 +502,7 @@ export const projects: Record<string, Project> = {
     
     Once complete, I installed the app onto my Dad's phone, and the answer came out: 19 (the range was 0-50). I almost instantly suggested to run it again because that answer just didn't seem right, but he refused, submitting that answer. And he won.`,
     buttons: [
-      { text: 'GitHub Gist (swift)', link: 'https://gist.github.com/eeehh/1de1fdc7dff5be0b79ec2f8b386ad926', icon: GitHub }
+      { text: 'GitHub Gist (swift)', link: 'https://gist.github.com/dawnniie/1de1fdc7dff5be0b79ec2f8b386ad926', icon: GitHub }
     ]
   }
-}
+]
